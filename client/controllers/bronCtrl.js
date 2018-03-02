@@ -1,9 +1,9 @@
 var bronCtrl = angular.module('bronCtrl', []);
-
 bronCtrl.controller('bronCtrl', function($rootScope, $scope, bookingService){
     $scope.newsLetter = {
         status:true
     };
+    
     $scope.bronFirst = true;
     $scope.bronSecond = false;
     $scope.dropDownTimeEst = "Vali kellaaeg";
@@ -120,8 +120,6 @@ bronCtrl.controller('bronCtrl', function($rootScope, $scope, bookingService){
         $scope.form.showDropDownPeopleFin = true;
     }
 
-
-
     $scope.times = ["12:00", "12:30", "13:00", "13:30", "14:00", "14:30","15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30","20:00", "20:30", "21:00"];
     $scope.people = ["1 people", "2 people", "3 people", "4 people", "5 people", "6 people", "7 people", "8 people"];
     $scope.peopleEst = ["1 inimene", "2 inimest", "3 inimest", "4 inimest", "5 inimest", "6 inimest", "7 inimest", "8 inimest"];
@@ -163,14 +161,16 @@ bronCtrl.controller('bronCtrl', function($rootScope, $scope, bookingService){
         $scope.form.showDropDownTimeFin = false;
         $scope.dropDownTimeFin = item;
     }
- 
+    
+    
     $scope.minDate = new Date().toDateString();
- 
     $scope.validateDateEst = function(){
         $scope.dropDownPeopleEstError = false;
         $scope.dropDownTimeEstError = false;
         $scope.dateEstError = false;
         $scope.errorMsg2 = false;
+        
+        
 
         var selectedDateEst = new Date ($scope.dateEst);
         var SundayEst = selectedDateEst.getDay();
@@ -188,17 +188,18 @@ bronCtrl.controller('bronCtrl', function($rootScope, $scope, bookingService){
         }
         if(typeof($scope.dateEst) === 'undefined' ){
             $scope.dateEstError = true;
-            $scope.errorMsg2 = true;
+            
         }
-        if(!$scope.dropDownTimeEstError && !$scope.dropDownTimeEstError && !$scope.dateEstError && !$scope.errorMsg2){
+        if(!$scope.dropDownPeopleEstError && !$scope.dropDownTimeEstError && !$scope.dateEstError &&  !$scope.errorMsg2){
             console.log("tulen siisa");
             bookingService.validateBooking($scope.dropDownTimeEst, $scope.dateEst).then(function(data){
                 if(data.error){
                     $scope.bronFrist = true;
                     $scope.bronSecond = false;
                     $scope.errorMsg = true;
-                    $scope.errorMsg = true;
-                    $scope.errorMsg2 = true;
+                    
+                    
+                    
                 }else{
                     $scope.bronFirst = false;
                     $scope.bronSecond = true;
@@ -271,16 +272,16 @@ bronCtrl.controller('bronCtrl', function($rootScope, $scope, bookingService){
         }
         if(typeof($scope.dateEng) === 'undefined' ){
             $scope.dateEngError = true;
-            $scope.errorMsg2 = true;
+            
         }
-        if(!$scope.dropDownPeopleEngError && !$scope.dropDownTimeEngError && !$scope.dateEngError && !$scope.errorMsg2){
+        if(!$scope.dropDownPeopleEngError && !$scope.dropDownTimeEngError && !$scope.dateEngError){
             bookingService.validateBooking($scope.dropDownTime, $scope.dateEng).then(function(data){
                 if(data.error){
                     $scope.bronFrist = true;
                     $scope.bronSecond = false;
                     $scope.errorMsg = true;
                     $scope.errorMsg = true;
-                    $scope.errorMsg2 = true;
+                   
 
                 }else{
                     $scope.bronFirst = false;
@@ -315,12 +316,11 @@ bronCtrl.controller('bronCtrl', function($rootScope, $scope, bookingService){
         if(typeof($scope.dateFin) === 'undefined' ){
             $scope.dateFinError = true;
         }
-        if(!$scope.dropDownPeopleFinError && !$scope.dropDownTimeFinError && !$scope.dateFinError && !$scope.errorMsg2){
+        if(!$scope.dropDownPeopleFinError && !$scope.dropDownTimeFinError && !$scope.dateFinError){
             bookingService.validateBooking($scope.dropDownTimeFin, $scope.dateFin).then(function(data){
                 if(data.error){
                     $scope.bronFrist = true;
                     $scope.bronSecond = false;
-                    $scope.errorMsg2 = true;
                     $scope.errorMsg = true;
                     $scope.errorMsg = true;
                 }else{
@@ -393,14 +393,14 @@ bronCtrl.controller('bronCtrl', function($rootScope, $scope, bookingService){
         if(typeof($scope.dateRus) === 'undefined' ){
             $scope.dateRusError = true;
         }
-        if(!$scope.dropDownPeopleRusError && !$scope.dropDownTimeRusError && !$scope.dateRusError && !$scope.errorMsg2){
+        if(!$scope.dropDownPeopleRusError && !$scope.dropDownTimeRusError && !$scope.dateRusError){
             bookingService.validateBooking($scope.dropDownTimeRus, $scope.dateRus).then(function(data){
                 if(data.error){
                     $scope.bronFrist = true;
                     $scope.bronSecond = false;
                     $scope.errorMsg = true;
                     $scope.errorMsg = true;
-                    $scope.errorMsg2 = true;
+                    
                 }else{
                     $scope.bronFirst = false;
                     $scope.bronSecond = true;
