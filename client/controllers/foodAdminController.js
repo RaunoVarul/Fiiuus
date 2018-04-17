@@ -1,6 +1,22 @@
 var foodAdminController = angular.module('foodAdminController', []);
 
 foodAdminController.controller('foodAdminController', function($scope, $rootScope, foodService){
+    //Sorting stuff
+    $scope.sortData = function (column) {
+        $scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
+        $scope.sortColumn = column;
+    }
+
+    $scope.getSortClass = function (column) {
+
+        if ($scope.sortColumn == column) {
+            return $scope.reverseSort
+                ? 'sorting-arrow-down'
+                : 'sorting-arrow-up';
+        }
+
+        return '';
+    }
     $scope.addFoodModal = false;
     $scope.estModal = true;
     $scope.engModal = false;
@@ -87,7 +103,6 @@ foodAdminController.controller('foodAdminController', function($scope, $rootScop
     $scope.selected = $scope.courses[0];
 
     foodService.getFood().then(function(data){
-        console.log(data);
         $scope.foodList = data;
     }, function(err){
         console.log(err);
@@ -181,15 +196,6 @@ foodAdminController.controller('foodAdminController', function($scope, $rootScop
         if($scope.descriptionRus === "{{descriptionRusEdit}}"){
             rusDesc = $scope.descriptionRusEdit;
         }
-        console.log(estName);
-        console.log(editPrice);
-        console.log(estDesc);
-        console.log(engName);
-        console.log(engDesc);
-        console.log(finName);
-        console.log(finDesc);
-        console.log(rusName);
-        console.log(rusDesc);
 
         foodService.updateFood($scope.foodId, estName, $scope.selected, editPrice, estDesc,
             engName, engDesc,

@@ -2,32 +2,36 @@ var eventCtrl = angular.module('eventCtrl', []);
 
 eventCtrl.controller('eventCtrl', function ($scope, eventService, $rootScope) {
     eventService.getEvents().then(function (data) {
-            console.log(data);
             $scope.events = data;
             //checks if database contains any events, if not it hides events from navbar and the whole events container by using ng-hide in landing.html
-            if (data.length === 0) {
-                $scope.eventNavbar = true;
+            if(data.length === 0){
                 $scope.eventContainer = true;
-            } else {
-                $scope.eventNavbar = false;
+                $scope.eventNavbar = true;
+                $scope.eventDialog = true;
+            }else {
                 $scope.eventContainer = false;
+                $scope.eventNavbar = false;
+                $scope.eventDialog = false;
             }
-            // angular.forEach($scope.events, function (value) {
-            //     value.date = new Date(value.date);
-            // });
-
-
             //if the highest date which is first in the array is smaller than the current date, it hides the navbar and events container
             var tday = new Date();
             var day = new Date().setDate(tday.getDate() + 1);
-            var dateTime = new Date(day);
-            var dateTime1 = new Date(data[0]['date']);
-            if (dateTime1 > dateTime) {
-                $scope.eventNavbar = false;
+            var nowdateTime = new Date(day);
+            var eventdateTime= new Date(data[0]['date']);
+            //var dategetter = data[0]['date'].toString().split(" ")[0];
+            //var timegetter = data[0]['date'].toString().split(" ")[1];
+            //var eventdateTime = new Date(dategetter.split("-")[0],parseInt(dategetter.split("-")[1])-1,dategetter.split("-")[2],timegetter.split(":")[0],timegetter.split(":")[0]);
+
+            if (eventdateTime > nowdateTime ) {
                 $scope.eventContainer = false;
+                $scope.eventNavbar = false;
+                $scope.eventDialog = false;
+
             } else {
-                $scope.eventDialog = true;
                 $scope.eventContainer = true;
+                $scope.eventNavbar= true;
+                $scope.eventDialog = true;
+
             }
             $scope.limit = 5;
             var today = new Date();
@@ -93,9 +97,11 @@ eventCtrl.controller('eventCtrl', function ($scope, eventService, $rootScope) {
                 if (data[step] === null || data[step] === undefined || data[step].length <= 0) {
                     $scope.eventNavbar = true;
                     $scope.eventContainer = true;
+                    $scope.eventDialog = true;
                 } else {
                     $scope.eventNavbar = false;
                     $scope.eventContainer = false;
+                    $scope.eventDialog = false;
                     break;
                 }
             }

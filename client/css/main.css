@@ -16,6 +16,42 @@
     padding: 15px;
     width: 380px;
 }
+.TextField{
+    margin-top: 30px;
+    margin-left: 20px;
+    padding: 15px;
+    width: 75%;
+}
+.Btn {
+    background: white;
+    border: 1px solid black;
+    margin-top:10px;
+    margin-left:10px;
+    padding:15px;
+}
+.TextArea {
+    margin-top:30px;
+    margin-left: 10px;
+    padding: 10px;
+    width: 90%;
+    height: 10px;
+}
+.TasteEventBtn {
+    background: white;
+    border: 1px solid black;
+    margin-top:30px;
+    margin-left:10px;
+    padding:15px;
+    display:inline-block;
+}
+.TasteEventTextArea {
+    margin-top:30px;
+    margin-left: 10px;
+    padding: 10px;
+    width: 75%;
+    height: 10px;
+}
+
 .landing-nav-btn{
     font-family: spaceMono;
     font-size: 16px;
@@ -773,7 +809,6 @@ th{
     width: 100%;
 }
 .event-picture {
-    /*background-image: url('img/mockup-worker.png');*/
     margin-top: 80px;;
     background-size: cover;
     max-width:100%;
@@ -1856,4 +1891,41 @@ datepicker.backend-date > input{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;  
+}
+
+.sorting-arrow-up {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+
+.sorting-arrow-down {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+
+}
+
+.searchbox {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 60px;
+    padding: 0 46px 0 10px;
+    border-color: #888;
+    border-radius: 35px; /* (height/2) + border-width */
+    border-style: solid;
+    border-width: 5px;
+    margin-top: 15px;
+    color: #333;
+    font-family: 'Helvetica', sans-serif;
+    font-size: 26px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }

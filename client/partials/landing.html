@@ -1084,7 +1084,7 @@
                     <div>
                         <div class="container" ng-hide="eventContainer" >
                             <div class="row">
-                                <div ng-if="$root.lang==='en'" ng-hide="eventContainerEng" class="col-md-12" style="margin-top: 60px;">
+                                <div ng-if="$root.lang==='en'" class="col-md-12" style="margin-top: 60px;">
                                 <span style="height: 1px;width: 40px;background: black;display: block;position: absolute;top: 10px;left: 40px;"></span>
                                     <p style="    position: absolute;top: 0px;left: 90px;font-family: spaceMono;">
                                         Events
@@ -1204,7 +1204,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div style="vertical-align: top; max-width: 100%">
-                                                        <div href="#" ng-if="$root.lang === 'ee'" class="pop" data-toggle="modal" data-target="#myModal"><img class="event-picture" src="http://via.placeholder.com/1600x900" alt=""></div> <!--{{event.image}}--><!--src="http://via.placeholder.com/1920x1080"--><!--{{event.image}}-->
+                                                        <div href="#" ng-if="$root.lang === 'ee'" class="pop" data-toggle="modal" data-target="#myModal"><img class="event-picture" src="{{event.image}}" alt=""></div> <!--{{event.image}}--><!--src="http://via.placeholder.com/1920x1080"--><!--{{event.image}}-->
                                                         <div href="#" ng-if="$root.lang === 'en'" class="pop" data-toggle="modal" data-target="#myModal"><img class="event-picture" src="{{event.imageEng}}" alt=""></div>
                                                         <div href="#" ng-if="$root.lang === 'fi'" class="pop" data-toggle="modal" data-target="#myModal"><img class="event-picture" src="{{event.imageFin}}" alt=""></div>
                                                         <div href="#" ng-if="$root.lang === 'ru'" class="pop" data-toggle="modal" data-target="#myModal"><img class="event-picture" src="{{event.imageRus}}" alt=""></div>
@@ -1298,16 +1298,16 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p ng-if="$root.lang==='en'" class="booking-title" style="color:black;">
-                                Come to visit us
+                                {{eventTitleEng}}
                             </p>
                             <p ng-if="$root.lang==='ee'" class="booking-title" style="color:black;">
-                                Tule meile külla
+                                {{eventTitle}}
                             </p>
                             <p ng-if="$root.lang==='fi'" class="booking-title" style="color:black;">
-                                Tervetuloa
+                                {{eventTitleFin}}
                             </p>
                             <p ng-if="$root.lang==='ru'" class="booking-title" style="color:black;font-family:Play">
-                                Приходите к нам
+                                {{eventTitleRus}}
                             </p>
                         </div>
                         <div class="col-md-6">

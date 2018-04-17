@@ -35,16 +35,9 @@ var Booking = require('../models/booking.js');
 var ClosedTimes = require('../models/closedTimes.js');
 // Event page routes ------------------
 router.post('/event/add', function(req, res){
-    console.log(req.body);
     var date = moment(req.body.date, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD');
-    //var time1 = req.body.time;
-    //var time2= parseInt(time1.split(":")[0])-3;
-    //var time3= time2+":"+time1.split(":")[1];
     var time = moment(req.body.time, 'HH:mm:ss').format('HH:mm:ss');
-    console.log("This is the moment converted date: " + date);
-    console.log("This is the moment converted time: " +time);
     var dateTime = date +"T" + time;
-    console.log("This is the datetime: " + dateTime);
     Event.create({
         name: req.body.name,
         description: req.body.description,
@@ -70,10 +63,7 @@ router.post('/event/update', function(req, res){
     var date = moment(req.body.dateedited, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD');
     var time = moment(req.body.timeedited, 'YYYY-MM-DD HH:mm:ss');
     var timeadd = moment(time).add(0, 'hours').format('HH:mm:ss');
-    console.log("This is the moment converted date: " + date);
-    console.log("This is the moment converted time: " + timeadd);
     var dateTime = date +"T" + timeadd;
-    console.log("This is the datetime: " + dateTime);
     Event.findOne({
         _id: req.body.id
     }, function(err, response){
@@ -117,7 +107,6 @@ router.post('/event/findbyid', function(req, res){
         _id: req.body.id
     }, function(err, response){
         if(err)res.send(err);
-        console.log(response.date);
         var perma = {};
         perma.id = response._id;
         perma.name = response.name;
@@ -158,7 +147,8 @@ router.get('/event/get', function(req, res){
             perma.imageEng = element.imageEng;
             perma.imageFin = element.imageFin;
             perma.imageRus = element.imageRus;
-            perma.date = moment.tz(element.date, "YYYY-MM-DD HH:mm:ssZ", "Europe/Tallinn").format("YYYY-MM-DD HH:mm");
+            //perma.date = moment.tz(element.date, "YYYY-MM-DD HH:mm:ssZ", "Europe/Tallinn").format("YYYY-MM-DD HH:mm");
+            perma.date=moment(element.date).utcOffset(moment().tz('Europe/Tallinn').format('Z')).format('YYYY-MM-DD HH:mm');
             response.push(perma);
         })
 
@@ -186,7 +176,8 @@ router.get('/event/getnext', function(req, res){
                 perma.imageEng = element.imageEng;
                 perma.imageRus = element.imageRus;
                 perma.imageFin = element.imageFin;
-                perma.date = moment.tz(element.date, "YYYY-MM-DD HH:mm:ssZ", "Europe/Tallinn").format("DD-MM-YYYY HH:mm");
+                //perma.date = moment.tz(element.date, "YYYY-MM-DD HH:mm:ssZ", "Europe/Tallinn").format("DD-MM-YYYY HH:mm");
+                perma.date = moment(element.date).utcOffset(moment().tz('Europe/Tallinn').format('Z')).format('DD-MM-YYYY HH:mm');
                 response.push(perma);
             }else{
                 return;
@@ -202,13 +193,11 @@ router.get('/event/delete', function(req, res){
         var response = [];
         events.forEach(function(element){
             perma = {};
-            console.log(moment(element.date).isBefore(moment().subtract('7', 'days')));
             if(moment(element.date).isBefore(moment().subtract('7', 'days'))){
                 Event.remove({
                     _id: element._id
                 }, function(err){
                     if(err) res.send(err);
-                    console.log("event was removed");
                     res.json({
                         msg: "event was removed"
                     })
@@ -378,17 +367,12 @@ router.post('/times/delete', function(req, res){
 })
 router.post('/times/add', function(req, res){
     var startDate = moment(req.body.date).format('YYYY-MM-DD');
-    console.log(startDate);
     var startTime = moment(req.body.start, 'HH:mm:ss').format('HH:mm:ss');
     var startDateTime = startDate+"T"+startTime;
 
     var endDate = moment(req.body.date).format('YYYY-MM-DD');
-    console.log(endDate);
     var endTime = moment(req.body.end, 'HH:mm:ss').format('HH:mm:ss');
     var endDateTime = endDate+"T"+endTime;
-
-    console.log(moment(startDateTime));
-    console.log(moment(endDateTime));
 
     ClosedTimes.create({
         start:  moment(startDateTime),
@@ -407,7 +391,7 @@ router.get('/times/get', function(req, res){
             var temp = {};
             temp._id = element._id;
             temp.start = moment(element.start).utcOffset(moment().tz('Europe/Tallinn').format('Z')).format('HH:mm DD-MM-YYYY');
-            temp.end = moment(element.end).format('HH:mm DD-MM-YYYY');
+            temp.end = moment(element.end).utcOffset(moment().tz('Europe/Tallinn').format('Z')).format('HH:mm DD-MM-YYYY');
             temp.reason = element.reason;
             response.push(temp);
 
@@ -420,11 +404,9 @@ router.post('/times/validate', function(req, res){
     var date = moment(req.body.date, 'DD MMMM, YYYY').format('YYYY-MM-DD');
     var time = moment(req.body.time, 'HH:mm').format('HH:mm');
     var dateTime = moment(date+"T"+time);
-    console.log(dateTime);
 
     ClosedTimes.find(function(err, times){
         if(err) res.send(err);
-        console.log(times);
         times.forEach(function(element){
             var o = moment().tz('Europe/Tallinn').format('Z');
             if(o.substring(0,1) === "+"){
@@ -439,10 +421,8 @@ router.post('/times/validate', function(req, res){
             //var test2 = parseInt(moment(element.start).format('HH'))+offset;
 
             //for server
-            var test = parseInt(moment(element.end).format('HH'));
-            var test2 = parseInt(moment(element.start).format('HH'));
-            console.log(test);
-            console.log(test2);
+            var test = parseInt(moment(element.end).format('HH'))+offset;
+            var test2 = parseInt(moment(element.start).format('HH'))+offset;
 
             var bookingTime = new Date();
             bookingTime.setHours(parseInt(moment(dateTime).format('HH')));
@@ -459,20 +439,11 @@ router.post('/times/validate', function(req, res){
             closedTimeStart.setMinutes(parseInt(moment(element.start).format('mm')));
             closedTimeStart.setSeconds(0);
 
-            console.log(date);
-            console.log(closedDate);
-            console.log(bookingTime);
-            console.log(closedTimeEnd);
-            console.log(closedTimeStart);
-
-            console.log(bookingTime.getHours().toString() + bookingTime.getMinutes().toString());
 
             if(moment(date).isSame(closedDate)){
-                console.log("sama kuupäev");
                 if(bookingTime < closedTimeEnd){
-                    if(bookingTime > closedTimeStart || 
+                    if(bookingTime > closedTimeStart ||
                         bookingTime.getHours().toString() + bookingTime.getMinutes().toString() === closedTimeStart.getHours().toString() + closedTimeStart.getMinutes().toString()){
-                        console.log("See aeg on restorani sulgemise ajal");
                         counter ++;
                     }else{
                         console.log("Selle ajaga on kõik korras");
@@ -482,7 +453,6 @@ router.post('/times/validate', function(req, res){
                 }
             }
         })
-        console.log(counter);
         if(counter > 0){
             res.json({
                 error: "this date and time are closed"
@@ -509,10 +479,10 @@ router.post('/booking/delete', function(req, res){
 router.post('/booking/add', function(req, res){
     if(req.body.lang === "ee"){
         var testData = {
-              from: 'Fii restoran <info@fiiresto.ee>',
-              to: req.body.email,
-              subject: 'Broneeringu kinnitus',
-              html: '<!DOCTYPE html> \
+            from: 'Fii restoran <info@fiiresto.ee>',
+            to: req.body.email,
+            subject: 'Broneeringu kinnitus',
+            html: '<!DOCTYPE html> \
                       <html>\
                        <head>\
                         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />\
@@ -539,10 +509,10 @@ router.post('/booking/add', function(req, res){
     }
     if(req.body.lang ==="en"){
         var testData = {
-              from: 'Fii restaurant <info@fiiresto.ee>',
-              to: req.body.email ,
-              subject: 'Booking confirmation',
-              html: '<!DOCTYPE html> \
+            from: 'Fii restaurant <info@fiiresto.ee>',
+            to: req.body.email ,
+            subject: 'Booking confirmation',
+            html: '<!DOCTYPE html> \
                       <html>\
                        <head>\
                         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />\
@@ -569,10 +539,10 @@ router.post('/booking/add', function(req, res){
     }
     if(req.body.lang ==="ru"){
         var testData = {
-              from: 'Fii restaurant <info@fiiresto.ee>',
-              to: req.body.email ,
-              subject: 'Booking confirmation',
-              html: '<!DOCTYPE html> \
+            from: 'Fii restaurant <info@fiiresto.ee>',
+            to: req.body.email ,
+            subject: 'Booking confirmation',
+            html: '<!DOCTYPE html> \
                       <html>\
                        <head>\
                         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />\
@@ -599,10 +569,10 @@ router.post('/booking/add', function(req, res){
     }
     if(req.body.lang ==="fi"){
         var testData = {
-              from: 'Fii restaurant <info@fiiresto.ee>',
-              to: req.body.email ,
-              subject: 'Varausvahvistus',
-              html: '<!DOCTYPE html> \
+            from: 'Fii restaurant <info@fiiresto.ee>',
+            to: req.body.email ,
+            subject: 'Varausvahvistus',
+            html: '<!DOCTYPE html> \
                       <html>\
                        <head>\
                         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />\
@@ -659,11 +629,9 @@ router.post('/booking/add', function(req, res){
     }
 
     mailgun.messages().send(testData, function (error, body) {
-      console.log(body);
     });
     mailgun.messages().send(infoToResto, function(error, body){
-        console.log(body);
-    })
+    });
     var date = moment.tz(req.body.date, 'DD MMMM, YYYY', "Europe/Tallinn").format('YYYY-MM-DD');
     var time1 = req.body.time;
     var time2= parseInt(time1.split(":")[0])-3;
@@ -762,7 +730,6 @@ router.post('/design/add', function(req, res){
         block: req.body.menuPosition
     }, function(err, count){
         if(err) res.send(err);
-        console.log(count);
         if(count === 0){
             DesignPicture.create({
                 picturePath: req.body.path,
@@ -1152,61 +1119,60 @@ router.get('/worker/remove/:id', function(req, res){
 
 // Login routes ----------------------
 router.post('/register', function(req, res) {
-    console.log("We are here");
-  User.register(new User({ username: req.body.username }),
-    req.body.password, function(err, account) {
-    if (err) {
-      return res.status(500).json({
-        err: err
-      });
-    }
-    passport.authenticate('local')(req, res, function () {
-      return res.status(200).json({
-        status: 'Registration successful!'
-      });
-    });
-  });
+    User.register(new User({ username: req.body.username }),
+        req.body.password, function(err, account) {
+            if (err) {
+                return res.status(500).json({
+                    err: err
+                });
+            }
+            passport.authenticate('local')(req, res, function () {
+                return res.status(200).json({
+                    status: 'Registration successful!'
+                });
+            });
+        });
 });
 
 router.post('/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      return res.status(401).json({
-        err: info
-      });
-    }
-    req.logIn(user, function(err) {
-      if (err) {
-        return res.status(500).json({
-          err: 'Could not log in user'
+    passport.authenticate('local', function(err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.status(401).json({
+                err: info
+            });
+        }
+        req.logIn(user, function(err) {
+            if (err) {
+                return res.status(500).json({
+                    err: 'Could not log in user'
+                });
+            }
+            res.status(200).json({
+                status: 'Login successful!'
+            });
         });
-      }
-      res.status(200).json({
-        status: 'Login successful!'
-      });
-    });
-  })(req, res, next);
+    })(req, res, next);
 });
 
 router.get('/logout', function(req, res) {
-  req.logout();
-  res.status(200).json({
-    status: 'Bye!'
-  });
+    req.logout();
+    res.status(200).json({
+        status: 'Bye!'
+    });
 });
 
 router.get('/status', function(req, res) {
-  if (!req.isAuthenticated()) {
-    return res.status(200).json({
-      status: false
+    if (!req.isAuthenticated()) {
+        return res.status(200).json({
+            status: false
+        });
+    }
+    res.status(200).json({
+        status: true
     });
-  }
-  res.status(200).json({
-    status: true
-  });
 });
 
 

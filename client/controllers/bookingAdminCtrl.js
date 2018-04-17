@@ -1,6 +1,33 @@
 var bookingAdminCtrl = angular.module('bookingAdminCtrl', []);
 
 bookingAdminCtrl.controller('bookingAdminCtrl', function($scope, bookingService){
+    $scope.pageSize=20; // number of lines in a page
+    $scope.currentPage= 1; // starting page for  bron
+    $scope.maxSize=9; // How many page numbers is shown
+    $scope.closedPageSize=15; // these are same data as above just for closedTimes in bottom
+    $scope.closedCurrentPage=1;
+    $scope.closedMaxSize=5;
+
+
+
+    $scope.sortData = function (column) {
+        $scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
+        $scope.sortColumn = column;
+    }
+
+    $scope.getSortClass = function (column) {
+
+        if ($scope.sortColumn == column) {
+            return $scope.reverseSort
+                ? 'sorting-arrow-down'
+                : 'sorting-arrow-up';
+        }
+
+        return '';
+    }
+
+
+
     $scope.form = {
         showStartTime: false,
         showEndTime: false
@@ -26,10 +53,16 @@ bookingAdminCtrl.controller('bookingAdminCtrl', function($scope, bookingService)
         $scope.form.showEndTime = false;
     }
     bookingService.getClosedTimes().then(function(data){
-        console.log(data);
         $scope.closedTimes = data;
     })
+
     bookingService.getBookings().then(function(data){
+        for(var i = 0; i<data.length;i++) {
+            var date = data[i]['date'].split(" ")[0];
+            var time = data[i]['date'].split(" ")[1];
+            var datetime = new Date(date.split("-")[2], parseInt(date.split("-")[1])-1, date.split("-")[0],time.split(":")[0], time.split(":")[1]);
+            data[i]['date'] = datetime;
+        }
         $scope.bookings = data;
     })
     $scope.showModal = function(){
@@ -47,7 +80,6 @@ bookingAdminCtrl.controller('bookingAdminCtrl', function($scope, bookingService)
     }
     $scope.deleteClosedTime = function(id){
         bookingService.deleteTime(id).then(function(data){
-            console.log(data);
             bookingService.getClosedTimes().then(function(data){
                 $scope.closedTimes = data;
             })
@@ -56,35 +88,11 @@ bookingAdminCtrl.controller('bookingAdminCtrl', function($scope, bookingService)
     $scope.submitClosedTime = function(){
         var date = new Date();
         var offset = date.getTimezoneOffset() / 60;
-
-        /*var startHours = $scope.event.startTime.getHours();
-        var startMinutes = $scope.event.startTime.getMinutes();
-
-        var endHours = $scope.event.endTime.getHours();
-        var endMinutes = $scope.event.endTime.getMinutes();*/
-
-        /*if(startMinutes.toString().length == 1){
-            console.log("me here");
-            startMinutes = "0" + $scope.event.startTime.getMinutes();
-        }*/
-        /*if(endMinutes.toString().length == 1){
-            console.log("me here");
-            endMinutes = "0" + $scope.event.endTime.getMinutes();
-        }*/
-        console.log($scope.event.date);
-        console.log("START: " + $scope.startTime + ":00");
-        console.log("END: " + $scope.endTime + ":00");
-        var officialdate = new Date($scope.event.date.split("-")[2], parseInt($scope.event.date.split("-")[1])-1, parseInt($scope.event.date.split("-")[0]));
-        console.log($scope.event.date.split("-"));
-        console.log((parseInt($scope.startTime.split(":")[0])).toString() + ":"+$scope.startTime.split(":")[1] + ":00");
-        console.log((parseInt($scope.endTime.split(":")[0])).toString() + ":"+$scope.endTime.split(":")[1] + ":00");
-        console.log(officialdate);
+        var officialdate = new Date(parseInt($scope.event.date.split("-")[2]), parseInt($scope.event.date.split("-")[1])-1, parseInt($scope.event.date.split("-")[0]),12);
         bookingService.addClosedTime(officialdate, (parseInt($scope.startTime.split(":")[0])+offset).toString() + ":" + $scope.startTime.split(":")[1] + ":00",
-            (parseInt($scope.endTime.split(":")[0])).toString() + ":"+$scope.endTime.split(":")[1] + ":00", $scope.event.reason)
+            (parseInt($scope.endTime.split(":")[0])+offset).toString() + ":"+$scope.endTime.split(":")[1] + ":00", $scope.event.reason)
             .then(function(data){
-                console.log(data);
                 bookingService.getClosedTimes().then(function(data){
-                    console.log(data);
                     $scope.closedTimes = data;
                 })
             })
