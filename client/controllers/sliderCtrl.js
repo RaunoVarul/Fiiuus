@@ -94,6 +94,9 @@ sliderCtrl.controller('sliderCtrl', function($location,$rootScope, $scope, landi
     landingTextService.getLandingText("contactTimeWorkWeek", "ee").then(function(data){
         $scope.contactTimeWorkWeek = data.text;
     })
+    landingTextService.getLandingText("contactTimeWorkWeekTitle", "ee").then(function(data){
+        $scope.contactTimeWorkWeekTitle = data.text;
+    })
     landingTextService.getLandingText("bannerTitleEst", "ee").then(function(data){
         $scope.bannerTitleEst = data.text;
     })

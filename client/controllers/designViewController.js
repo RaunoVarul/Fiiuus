@@ -352,6 +352,28 @@ designViewController.controller('designViewController', function($scope, picture
         });
     }
 
+    landingTextService.getLandingText("contactTimeWorkWeekTitle", "ee").then(function(data){
+        if(data.text == null){
+            $scope.workWeekTimeTitle = "Nothing here";
+        }
+        $scope.workWeekTimeTitle = data.text;
+    })
+    $scope.insertWorkWeekTitle = function(){
+        var update = "";
+        update = $scope.workWeekTimeTitle;
+        if($scope.workWeekTimeTitle === "{{editWorkWeekTimeTitle}}"){
+            update = $scope.editWorkWeekTimeTitle;
+        }
+        landingTextService.addOrUpdateLandingText("contactTimeWorkWeekTitle", update, "ee").then(function(data){
+            landingTextService.getLandingText("contactTimeWorkWeekTitle", "ee").then(function(data){
+                if(data.text == null){
+                    $scope.workWeekTimeTitle = "Nothing here";
+                }
+                $scope.workWeekTimeTitle = data.text;
+            })
+        });
+    }
+
     landingTextService.getLandingText("contactTimeWeekend", "ee").then(function(data){
         if(data.text == null){
             $scope.weekendTime = "Nothing here";
